@@ -6,13 +6,26 @@ async function main() {
   const SimpleStorageFactory = await ethers.getContractFactory("SimpleStorage")
   console.log("Deploying contract...")
   const simpleStorage = await SimpleStorageFactory.deploy()
-  await simpleStorage.deployed()
-  console.log(`Deployed contract to: ${simpleStorage.address}`)
+
+  //Not compatible with ethers version below 6 ---->
+  
+  // await simpleStorage.deployed()
+  // console.log(`Deployed contract to: ${simpleStorage.address}`)
+
+  //________________________________________________
+  console.log(`Deploying contract to: ${simpleStorage.target}`) //for ethers verion 6 or above
   // what happens when we deploy to our hardhat network?
   if (network.config.chainId === 11155111 && process.env.ETHERSCAN_API_KEY) {
     console.log("Waiting for block confirmations...")
-    await simpleStorage.deployTransaction.wait(6)
-    await verify(simpleStorage.address, [])
+    //Not compatible with ethers version below 6 ---->
+    
+    // await simpleStorage.deployTransaction.wait(6)
+    // await verify(simpleStorage.address, [])
+
+    //________________________________________________
+
+    await simpleStorage.deploymentTransaction().wait(6)
+    await verify(simpleStorage.target, [])
   }
 
   const currentValue = await simpleStorage.retrieve()
